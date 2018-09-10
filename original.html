@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Byteduino Hardware Cosigner</title>
+<style type="text/css">
+</style>
+</head>
+<body>
+<script>
+sendAjaxRequest("/device_infos.json", updateDeviceInfos);
+sendAjaxRequest("/paired_devices.json", updatePairedDevices);
+sendAjaxRequest("/wallets.json", updateWallets);
+setInterval(function(){
+	sendAjaxRequest("/ongoing_signature.json", updateOnGoingSignature);
+},2000);
+function updateDeviceInfos(json) {
+	document.getElementById("device_infos").innerHTML = json;
+}
+	  
+function updatePairedDevices(json) {
+	document.getElementById("paired_devices").innerHTML = json;
+}
+function updateWallets(json) {
+	document.getElementById("wallets").innerHTML = json;
+}
+function updateOnGoingSignature(json) {
+
+	var sig_object = JSON.parse(json);
+	if (sig_object.digest){
+		if (sig_object.isConfirmed){
+			document.getElementById("submit_button").style.display = "none";
+			document.getElementById("sign_digest").innerHTML = "Sending signature for :" + sig_object.hash;
+		}else{
+			document.getElementById("submit_button").style.display = "initial";
+			document.getElementById("sign_digest").innerHTML = "Cosigning requested for:" + sig_object.digest;
+			document.getElementById("hash").value = sig_object.hash;
+		}
+
+	}else{
+		document.getElementById("sign_digest").innerHTML = "No cosigning requested";
+		document.getElementById("submit_button").style.display = "none";
+
+	}
+
+}
+
+function sendAjaxRequest(url, callback,params){
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+			callback(this.responseText);
+		}
+	};
+	if (params){
+		xmlhttp.open("POST", url, true);
+		xmlhttp.send(params);
+	}else{
+		xmlhttp.open("GET", url, true);
+		xmlhttp.send();
+	}
+}
+</script>
+
+<div id="device_infos">
+</div>
+<div id="paired_devices">
+</div>
+<div id="wallets">
+</div>
+<div id="sign_digest">
+</div>
+
+<div id="sign_form">
+	<form action="/confirm_signature" method="post">
+		<input type="hidden" id="hash"> 
+		<input type="submit" value="Sign" id="submit_button">
+	</form> 
+</div>
+
+</body>
+</html>
