@@ -30,7 +30,7 @@ void setup() {
   setPrivateKeyM4400("qA1CxKyzvpKX9+IRhLH8OjLYY06H3RLl+zqc3lT86aI=");
 
   WiFi.softAPdisconnect(true);
-  WiFiMulti.addAP("ben", "grosgros5");
+  WiFiMulti.addAP("my_ssid", "mys_password");
 
   while (WiFiMulti.run() != WL_CONNECTED) {
     delay(100);
@@ -43,35 +43,25 @@ void setup() {
 }
 
 void sendWalletsJson(WiFiClient &client) {
-  char json[PAIRED_DEVICES];
-  readWalletsJson(json);
-  Serial.println(json);
   client.flush();
-  client.print(json);
+  client.print(getWalletsJsonString());
+
 }
 
 void sendPairedDevicesJson(WiFiClient &client) {
-  char json[WALLETS_CREATED_FLASH_SIZE];
-  readPairedDevicesJson(json);
-  Serial.println(json);
   client.flush();
-  client.print(json);
+  client.print(getDevicesJsonString());
 }
 
 void sendDeviceInfosJson(WiFiClient &client) {
-  char json[300];
-  getDeviceInfosJson(json);
-  Serial.println(json);
+
   client.flush();
-  client.print(json);
+  client.print(getDeviceInfosJsonString());
 }
 
 void sendOnGoingSignatureJson(WiFiClient &client) {
-  char json[300];
-  getOnGoingSignatureJson(json);
-  Serial.println(json);
   client.flush();
-  client.print(json);
+  client.print(getOnGoingSignatureJsonString());
 }
 
 void loop() {
@@ -81,15 +71,16 @@ void loop() {
   WiFiClient client = server.available();
 
   if (client) {
-    Serial.println("Client");
     // an http request ends with a blank line
     boolean currentLineIsBlank = true;
-    char bufferClient[250];
+
     int i = 0;
+    char bufferClient[300];
+    char textToSign[45];
     while (client.connected()) {
       while (client.available()) {
         char c = client.read();
-        if (i < 250) {
+        if (i < 300) {
           bufferClient[i] = c;
           i++;
         }
@@ -99,13 +90,15 @@ void loop() {
         if (c == '\n' && currentLineIsBlank) {
 
           // Here is where the POST data is.
+          int j = 0;
           while (client.available())
           {
-            Serial.write(client.read());
+            textToSign[j] = client.read();
+            j++;
           }
-
-
-          Serial.println("Sending response");
+          textToSign[44] = 0x00;
+          Serial.println(textToSign);
+          // Serial.println("Sending response");
           // send a standard http response header
 
           if (strstr(bufferClient, "ongoing_signature.json") != nullptr) {
@@ -116,7 +109,13 @@ void loop() {
             sendDeviceInfosJson(client);
           } else if (strstr(bufferClient, "wallets.json") != nullptr) {
             sendWalletsJson(client);
-          } else {
+          } else if (strstr(bufferClient, "deny_signature") != nullptr) {
+            denySignature(textToSign);
+            Serial.println("deny signature");
+          } else if (strstr(bufferClient, "confirm_signature") != nullptr) {
+            confirmSignature(textToSign);
+            Serial.println("confirm signature");
+          } else if (strstr(bufferClient, "favico") == nullptr ) {
             sendWebpage(client);
           }
 
@@ -136,25 +135,4 @@ void loop() {
     Serial.println("Disconnected");
   }
 
-
-  /*
-    if (client) {
-    String req = client.readString();
-    Serial.println("client");
-
-
-    Serial.println(req);
-
-    if (req.indexOf("wallets.json") != -1) {
-
-      sendWalletsJson(client);
-    } else if (req.indexOf("paired_devices.json") != -1) {
-      sendPairedDevicesJson(client);
-    }  else if (req.indexOf("device_infos.json") != -1) {
-      sendDeviceInfosJson(client);
-    } else{
-     sendWebpage(client);
-    }
-    }
-  */
 }
