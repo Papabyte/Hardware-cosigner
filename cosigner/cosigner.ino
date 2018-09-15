@@ -14,15 +14,13 @@ void sendWebpage(WiFiClient &client);
 
 void setup() {
 
-
-
   Serial.begin(115200);
 
   while (!Serial)
     continue;
 
   setDeviceName("Byteduino");
-  setHub("byteball.org/bb-test"); //hub for testnet
+  setHub("byteball.org/bb");
 
   //don't forget to change the keys below, you will get troubles if more than 1 device is connected using the same keys
   setPrivateKeyM1("lgVGw/OfKKK4NqtK9fmJjbLCkLv7BGLetrdvsKAngWY=");
@@ -30,7 +28,7 @@ void setup() {
   setPrivateKeyM4400("qA1CxKyzvpKX9+IRhLH8OjLYY06H3RLl+zqc3lT86aI=");
 
   WiFi.softAPdisconnect(true);
-  WiFiMulti.addAP("my_ssid", "mys_password");
+  WiFiMulti.addAP("my_SSID", "my_password");
 
   while (WiFiMulti.run() != WL_CONNECTED) {
     delay(100);
@@ -109,11 +107,11 @@ void loop() {
             sendDeviceInfosJson(client);
           } else if (strstr(bufferClient, "wallets.json") != nullptr) {
             sendWalletsJson(client);
-          } else if (strstr(bufferClient, "deny_signature") != nullptr) {
-            denySignature(textToSign);
+          } else if (strstr(bufferClient, "refuse_signature") != nullptr) {
+            refuseTosign(textToSign);
             Serial.println("deny signature");
           } else if (strstr(bufferClient, "confirm_signature") != nullptr) {
-            confirmSignature(textToSign);
+            acceptToSign(textToSign);
             Serial.println("confirm signature");
           } else if (strstr(bufferClient, "favico") == nullptr ) {
             sendWebpage(client);

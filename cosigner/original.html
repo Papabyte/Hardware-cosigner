@@ -86,7 +86,7 @@ function updateDeviceInfos(json) {
 
 	document.getElementById("device_infos").innerHTML = html;
 }
-	  
+
 function updatePairedDevices(json) {
 
 	var objPairedDevices = JSON.parse(json);
@@ -98,6 +98,7 @@ function updatePairedDevices(json) {
 	}
 	document.getElementById("paired_devices").innerHTML = html;
 }
+	
 function updateWallets(json) {
 
 	var objWallets = JSON.parse(json);
@@ -110,35 +111,50 @@ function updateWallets(json) {
 
 	document.getElementById("wallets").innerHTML = html;
 }
+
+function hideButtons(){
+	document.getElementById("deny_button").style.display = "none";
+	document.getElementById("sign_button").style.display = "none";
 	
+}
 function updateOnGoingSignature(json) {
 
 	var sig_object = JSON.parse(json);
 	if (sig_object.digest){
-		if (sig_object.isConfirmed){
-			document.getElementById("deny_button").style.display = "none";
-			document.getElementById("sign_button").style.display = "none";
+		if (sig_object.isConfirmed || sig_object.isRefused){
+			hideButtons();
 			document.getElementById("sign_digest").innerHTML = "Sending signature for :";
-		}else{
+		} else {
 			document.getElementById("deny_button").style.display = "initial";
 			document.getElementById("sign_button").style.display = "initial";
 			var html = "<h4>Cosigning requested for:</h4>" ;
 			
-			html +="<table>";
-			html +="<tr><th>Address</th><th>Amount</th></tr>";
-			var digest = JSON.parse(sig_object.digest);
-			for (var key in digest[0]){
-				html+="<tr><td>" + key + "</td><td>"+ digest[0][key] + "</td></tr>";
-			}
-				html+="</table>";
-			text_to_sign = sig_object.signedText;
-			document.getElementById("sign_digest").innerHTML = html;
-		}
+			for (var i = 0; i< sig_object.digest.length; i++){
+			
+				 var app = sig_object.digest[i];
+				if (app.type === "payment"){
+					html += "Outputs in: " + app.asset;
+					html +="<table>";
+					html +="<tr><th>Address</th><th>Amount</th></tr>";
 
+					for (var key in app.outputs){
+						html+="<tr><td>" + key + "</td><td>"+ app.outputs[key] + "</td></tr>";
+					}
+						html+="</table>";
+
+				} else{
+					html += "Data:<br>";
+					html+= JSON.stringify(app);
+					html+="<br>";
+				}
+			
+			}
+		text_to_sign = sig_object.signedText;
+		document.getElementById("sign_digest").innerHTML = html;
+		}
 	}else{
 		document.getElementById("sign_digest").innerHTML = "No cosigning requested";
-		document.getElementById("deny_button").style.display = "none";
-		document.getElementById("sign_button").style.display = "none";
+		hideButtons();
 
 	}
 
@@ -159,17 +175,15 @@ function sendAjaxRequest(url, callback,params){
 		xmlhttp.send();
 	}
 }
-	
+
 function sign(){
-		document.getElementById("deny_button").style.display = "none";
-		document.getElementById("sign_button").style.display = "none";
-		sendAjaxRequest("/confirm_signature", function(){}, text_to_sign);
-	
+	hideButtons();
+	sendAjaxRequest("/confirm_signature", function(){}, text_to_sign);
 }
+
 function deny(){
-		document.getElementById("deny_button").style.display = "none";
-		document.getElementById("sign_button").style.display = "none";
-		sendAjaxRequest("/deny_signature", function(){}, text_to_sign);
+	hideButtons();
+	sendAjaxRequest("/refuse_signature", function(){}, text_to_sign);
 }
 </script>
 
