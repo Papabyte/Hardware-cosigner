@@ -2,12 +2,19 @@
 // MIT License
 
 #include <Arduino.h>
-#include <ESP8266WiFiMulti.h>
 #include <byteduino.h>
 
-#include <ESP8266WebServer.h>
+#if defined (ESP32)
+#include <WiFi.h>
+#include <WiFiMulti.h>
+WiFiMulti WiFiMulti;
+#endif
 
+#if defined (ESP8266)
+#include <ESP8266WiFiMulti.h>
+#include <ESP8266WebServer.h>
 ESP8266WiFiMulti WiFiMulti;
+#endif
 
 WiFiServer server(80);
 void sendWebpage(WiFiClient &client);
@@ -22,13 +29,13 @@ void setup() {
   setDeviceName("Byteduino");
   setHub("byteball.org/bb");
 
-  //don't forget to change the keys below, you will get troubles if more than 1 device is connected using the same keys
+  //don't forget to change the keys below!
   setPrivateKeyM1("lgVGw/OfKKK4NqtK9fmJjbLCkLv7BGLetrdvsKAngWY=");
   setExtPubKey("xpub6Chxqf8hRQoLRJFS8mhFCDv5yzUNC7rhhh36qqqt1WtAZcmCNhS5pPndqhx8RmgwFhGPa9FYq3iTXNBkYdkrAKJxa7qnahnAvCzKW5dnfJn");
   setPrivateKeyM4400("qA1CxKyzvpKX9+IRhLH8OjLYY06H3RLl+zqc3lT86aI=");
 
   WiFi.softAPdisconnect(true);
-  WiFiMulti.addAP("my_SSID", "my_password");
+  WiFiMulti.addAP("My_SSID", "My_password");
 
   while (WiFiMulti.run() != WL_CONNECTED) {
     delay(100);
@@ -96,8 +103,6 @@ void loop() {
           }
           textToSign[44] = 0x00;
           Serial.println(textToSign);
-          // Serial.println("Sending response");
-          // send a standard http response header
 
           if (strstr(bufferClient, "ongoing_signature.json") != nullptr) {
             sendOnGoingSignatureJson(client);
@@ -130,7 +135,6 @@ void loop() {
         }
       }
     }
-    Serial.println("Disconnected");
   }
 
 }
