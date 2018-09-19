@@ -1,5 +1,7 @@
 ## Byteduino hardware cosigner
 
+![hardware-cosigner](https://reho.st/preview/self/63427e1cfb0a3e09455ec07a4e874ea4f77757f3.jpg)
+
 This hardware cosigner allows to securize your funds by being a required device for a multisig wallet. Once set up and connected to internet via Wifi, you can pair it with the standard Byteball GUI wallet, add it as cosigner for a multidevice wallet then authorize the signature of a transaction from a webpage accessible from your local network. 
 It works on ESP8266 and ESP32 boards but ESP32 is recommended since it has no practical limitation about the size of unit you can cosign.
 
