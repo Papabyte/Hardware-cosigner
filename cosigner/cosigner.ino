@@ -5,7 +5,6 @@
 #include <byteduino.h>
 
 #if defined (ESP32)
-#include <WiFi.h>
 #include <WiFiMulti.h>
 WiFiMulti WiFiMulti;
 #endif
