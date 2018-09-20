@@ -2,8 +2,8 @@
 
 ![hardware-cosigner](https://reho.st/preview/self/63427e1cfb0a3e09455ec07a4e874ea4f77757f3.jpg)
 
-This hardware cosigner allows to securize your funds by being a required device for a multisig wallet. Once set up and connected to internet via Wifi, you can pair it with the standard Byteball GUI wallet, add it as cosigner for a multidevice wallet then authorize the signature of a transaction from a webpage accessible from your local network. 
-It works on ESP8266 and ESP32 boards but ESP32 is recommended since it has no practical limitation about the size of unit you can cosign.
+This hardware cosigner allows to securize your funds by being a required device for a multisig wallet. Once set up and connected to internet via Wifi, you pair it with the standard Byteball GUI wallet, add it as cosigner for a multidevice wallet then authorize the signature of a transaction from a webpage on your local network. 
+It works on ESP8266 and ESP32 boards although ESP32 is recommended since it has no practical limit for unit size you can cosign.
 
 To get support or discuss about this project, request an [invitation to Byteball Slack](http://slack.byteball.org/) and join **#byteduino** channel.
 
@@ -67,3 +67,6 @@ Authenticated by hub
 
 #### Cosign a transaction
 - Select your multidevice wallet and click on send a transaction, the wallet will ask you to approve the transaction on other devices. Go to the cosigner control webpage and click on confirm.
+
+#### Backup
+- Make sure to always have a backup of your seed and wallets definition (just copy all information shown on device control webpage). That's all you need to restore your wallet on another Byteduino device or a standard Byteball client.
