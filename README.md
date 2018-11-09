@@ -54,7 +54,7 @@ Pairing code:
 ArxPWIrgUvi5YuvugpJEE1aLwu9bRBOxoRFHSX9o6IyJ@byteball.org/bb#0000
 Extended Pub Key:
 xpub6Chxqf8hRQoLRJFS8mhFCDv5yzUNC7rhhh36qqqt1WtAZcmCNhS5pPndqhx8RmgwFhGPa9FYq3iTXNBkYdkrAKJxa7qnahnAvCzKW5dnfJn
-Wss connected to: /bb-test
+Wss connected to: /bb
 Authenticated by hub
 ```
 - Copy the IP address (attributed by your router) and paste it on your browser to access to the cosigner control webpage
