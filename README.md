@@ -5,6 +5,8 @@
 This hardware cosigner allows to securize your funds by being a required device for a multisig wallet. Once set up and connected to internet via Wifi, you pair it with the standard Byteball GUI wallet, add it as cosigner for a multidevice wallet then authorize the signature of a transaction from a webpage on your local network. 
 It works on ESP8266 and ESP32 boards although ESP32 is recommended since it has no practical limit for unit size you can cosign.
 
+Video tutorial by DrSensor: https://steemit.com/utopian-io/@drsensor/byteduino-create-your-own-hardware-cosigner-for-byteball-1543200264366
+
 To get support or discuss about this project, request an [invitation to Byteball Slack](http://slack.byteball.org/) and join **#byteduino** channel.
 
 **Blackbytes are not supported**
